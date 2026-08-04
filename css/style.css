@@ -26,7 +26,6 @@ body {
 .screen.active { display: block; }
 .hidden { display: none !important; }
 
-/* 버튼 */
 .btn {
   font-family: inherit;
   font-size: 1rem;
@@ -50,7 +49,6 @@ body {
 .btn-lg { font-size: 1.15rem; padding: 15px 34px; font-weight: 700; }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
 
-/* ===== 시작 화면 ===== */
 #start-screen {
   min-height: 100vh;
   padding: 32px 16px;
@@ -99,7 +97,25 @@ body {
 .subject-summary .subj b { color: var(--blue); white-space: nowrap; }
 .bank-status { margin-top: 14px; font-size: .85rem; color: #64748b; }
 
-/* ===== 시험 화면 ===== */
+.copyright-notice {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.55;
+  text-align: center;
+}
+.copyright-notice strong {
+  color: #334155;
+}
+.copyright-notice .source {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
 #exam-header {
   position: sticky; top: 0; z-index: 10;
   background: var(--card);
@@ -123,9 +139,7 @@ body {
   transition: width .25s ease;
 }
 
-#exam-screen {
-  padding-bottom: 100px;
-}
+#exam-screen { padding-bottom: 100px; }
 #question-area {
   max-width: 860px;
   margin: 0 auto;
@@ -162,8 +176,8 @@ body {
 }
 .choice:hover { border-color: #94a3b8; background: #f8fafc; }
 .choice.selected {
-  border-color: var(--blue);
-  background: var(--blue-light);
+  border-color: var(--blue) !important;
+  background: var(--blue-light) !important;
 }
 .choice .marker {
   font-weight: 700;
@@ -173,9 +187,7 @@ body {
 
 #exam-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   background: var(--card);
   box-shadow: 0 -4px 20px rgba(0,0,0,.08);
   padding: 14px 16px;
@@ -185,7 +197,6 @@ body {
   z-index: 20;
 }
 
-/* ===== 결과 화면 ===== */
 #result-screen { padding: 40px 16px; }
 .result-card {
   max-width: 640px; margin: 0 auto;
@@ -228,7 +239,6 @@ body {
 .sb-score { font-size: .85rem; font-weight: 600; width: 40px; text-align: right; }
 .result-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-/* 리뷰 */
 .review-area {
   max-width: 860px;
   margin: 32px auto 60px;
