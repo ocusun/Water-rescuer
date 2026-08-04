@@ -1,4 +1,4 @@
-/* 수상구조사 필기시험 모의고사 - 메인 로직 */
+/* 수상구조사 필기시험 모의고사 - 메인 로직 (JSON 버전) */
 (function () {
   'use strict';
 
@@ -41,6 +41,14 @@
     window.scrollTo(0, 0);
   }
 
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   // ---------- 시작 화면 ----------
   function renderStart() {
     var wrap = $('subject-summary');
@@ -76,9 +84,17 @@
       var pool = bank.filter(function (q) { return q.part === s.part; });
       var picked = shuffle(pool).slice(0, Math.min(s.count, pool.length));
       picked.forEach(function (q) {
-        exam.push({ subject: s.name, part: s.part, q: q.q, c: q.c, a: q.a, e: q.e || '' });
+        exam.push({
+          subject: s.name,
+          part: s.part,
+          q: q.q,
+          c: q.c,
+          a: q.a,
+          e: q.e || ''
+        });
       });
     });
+
     // 문제은행 부족 시 다른 과목에서 보충
     if (exam.length < TOTAL_QUESTIONS) {
       var usedTexts = {};
@@ -87,8 +103,12 @@
       for (var i = 0; i < rest.length && exam.length < TOTAL_QUESTIONS; i++) {
         var s = SUBJECTS.filter(function (x) { return x.part === rest[i].part; })[0];
         exam.push({
-          subject: s ? s.name : '기타', part: rest[i].part,
-          q: rest[i].q, c: rest[i].c, a: rest[i].a, e: rest[i].e || ''
+          subject: s ? s.name : '기타',
+          part: rest[i].part,
+          q: rest[i].q,
+          c: rest[i].c,
+          a: rest[i].a,
+          e: rest[i].e || ''
         });
       }
     }
@@ -139,25 +159,16 @@
     renderDots();
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
+  // ★ 중요: 답 선택 시 자동으로 다음 문제로 넘어가지 않음
   function selectChoice(n) {
     answers[currentIdx] = n;
     renderQuestion();
-    // 마지막 문제가 아니면 잠깐 뒤 자동 이동
-    if (currentIdx < exam.length - 1) {
-      setTimeout(function () {
-        if (answers[currentIdx] !== null && currentIdx < exam.length - 1) {
-          currentIdx++;
-          renderQuestion();
-        }
-      }, 250);
-    }
   }
 
-  function goTo(i) { currentIdx = i; renderQuestion(); }
+  function goTo(i) {
+    currentIdx = i;
+    renderQuestion();
+  }
 
   // ---------- 채점 / 결과 ----------
   function submitExam() {
@@ -168,20 +179,31 @@
 
     var correct = 0;
     var perSubject = {};
-    SUBJECTS.forEach(function (s) { perSubject[s.name] = { correct: 0, total: 0 }; });
-
-    exam.forEach(function (q, i) {
-      if (!perSubject[q.subject]) perSubject[q.subject] = { correct: 0, total: 0 };
-      perSubject[q.subject].total++;
-      if (answers[i] === q.a) { correct++; perSubject[q.subject].correct++; }
+    SUBJECTS.forEach(function (s) {
+      perSubject[s.name] = { correct: 0, total: 0 };
     });
 
-    var score = Math.round(correct / exam.length * 1000) / 10;
+    exam.forEach(function (q, i) {
+      var isCorrect = answers[i] === q.a;
+      if (isCorrect) correct++;
+      if (perSubject[q.subject]) {
+        perSubject[q.subject].total++;
+        if (isCorrect) perSubject[q.subject].correct++;
+      }
+    });
+
+    var score = Math.round(correct / exam.length * 100);
     $('score-value').textContent = score;
-    var pass = score >= PASS_SCORE;
-    var pm = $('pass-message');
-    pm.textContent = pass ? '🎉 합격권입니다!' : '아쉽지만 불합격권입니다';
-    pm.className = 'pass-message ' + (pass ? 'pass' : 'fail');
+
+    var passMsg = $('pass-message');
+    if (score >= PASS_SCORE) {
+      passMsg.textContent = '🎉 합격입니다!';
+      passMsg.className = 'pass-message pass';
+    } else {
+      passMsg.textContent = '아쉽지만 불합격입니다. 다시 도전해 보세요!';
+      passMsg.className = 'pass-message fail';
+    }
+
     $('score-detail').textContent =
       exam.length + '문제 중 ' + correct + '문제 정답 (합격 기준 ' + PASS_SCORE + '점 이상)';
 
@@ -268,12 +290,27 @@
     filters[i].addEventListener('change', renderReview);
   }
 
+  // 키보드 지원 (← → 로 이동, 1~4로 선택)
+  document.addEventListener('keydown', function (e) {
+    if (!$('exam-screen').classList.contains('active')) return;
+    if (e.key === 'ArrowLeft' && currentIdx > 0) goTo(currentIdx - 1);
+    if (e.key === 'ArrowRight' && currentIdx < exam.length - 1) goTo(currentIdx + 1);
+    if (['1','2','3','4'].indexOf(e.key) >= 0) {
+      selectChoice(parseInt(e.key, 10));
+    }
+  });
+
   renderStart();
 
-  // 문제은행(docx) 비동기 로드
-  window.loadQuestionBank()
+  // ★ 문제은행을 JSON으로 즉시 로드 (DOCX 실시간 파싱 제거)
+  fetch('data/questions.json')
+    .then(function (resp) {
+      if (!resp.ok) throw new Error('문제은행 파일을 불러올 수 없습니다 (' + resp.status + ')');
+      return resp.json();
+    })
     .then(function (questions) {
       bank = questions;
+      console.log('[문제은행] 총 ' + bank.length + '문항 로드 완료');
       renderStart();
       setStartReady();
     })
