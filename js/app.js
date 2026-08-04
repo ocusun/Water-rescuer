@@ -1,4 +1,4 @@
-/* 수상구조사 필기시험 모의고사 - 메인 로직 (JSON 버전 + 5문제 페이지) */
+/* 수상구조사 필기시험 모의고사 */
 (function () {
   'use strict';
 
@@ -184,7 +184,7 @@
   }
 
   function submitExam() {
-    var unanswered = answers.filter(function (a) { return a === null; }).length;
+    var unanswered = answers.filter(function (a) { return a !== null; }).length;
     if (unanswered > 0) {
       if (!confirm('아직 풀지 않은 문제가 ' + unanswered + '개 있습니다.\n그대로 제출할까요?')) return;
     }
@@ -343,14 +343,21 @@
   ];
   Promise.all(partUrls.map(function (url) {
     return fetch(url).then(function (r) {
-      if (!r.ok) throw new Error('문제은행 로드 실패: ' + url);
-      return r.json();
-    });
+      if (!r.ok) {
+        console.warn('부분 로드 실패:', url);
+        return [];
+      }
+      return r.json().catch(function () { return []; });
+    }).catch(function () { return []; });
   }))
     .then(function (parts) {
       bank = [];
       parts.forEach(function (p) { bank = bank.concat(p); });
       console.log('[문제은행] 총 ' + bank.length + '문항 로드 완료');
+      if (bank.length === 0) {
+        setStartError('문제은행 데이터를 불러올 수 없습니다');
+        return;
+      }
       renderStart();
       setStartReady();
     })
