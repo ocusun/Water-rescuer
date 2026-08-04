@@ -118,7 +118,7 @@
       var q = exam[i];
       var card = document.createElement('div');
       card.className = 'question-card';
-      card.dataset.idx = i;
+      card.setAttribute('data-idx', i);
 
       var choicesHtml = '';
       q.c.forEach(function (choiceText, ci) {
@@ -139,19 +139,6 @@
         '<h2 class="q-text">' + escapeHtml(q.q) + '</h2>' +
         '<ol class="choices">' + choicesHtml + '</ol>';
 
-      (function (idx) {
-        card.querySelectorAll('.choice').forEach(function (li) {
-          li.addEventListener('click', function () {
-            var n = parseInt(li.getAttribute('data-choice'), 10);
-            answers[idx] = n;
-            card.querySelectorAll('.choice').forEach(function (el) {
-              el.classList.toggle('selected', parseInt(el.getAttribute('data-choice'), 10) === n);
-            });
-            updateProgress();
-          });
-        });
-      })(i);
-
       area.appendChild(card);
     }
 
@@ -159,6 +146,32 @@
     updateNav();
     window.scrollTo(0, 0);
   }
+
+  // 이벤트 위임: 한 번만 등록, 모든 선택지 클릭 처리
+  $('question-area').addEventListener('click', function (e) {
+    var li = e.target.closest('.choice');
+    if (!li) return;
+    var card = li.closest('.question-card');
+    if (!card) return;
+    var idx = parseInt(card.getAttribute('data-idx'), 10);
+    if (isNaN(idx)) return;
+    var n = parseInt(li.getAttribute('data-choice'), 10);
+    if (isNaN(n)) return;
+
+    answers[idx] = n;
+
+    // 해당 카드의 선택 표시만 갱신
+    var choices = card.querySelectorAll('.choice');
+    for (var j = 0; j < choices.length; j++) {
+      var el = choices[j];
+      if (parseInt(el.getAttribute('data-choice'), 10) === n) {
+        el.classList.add('selected');
+      } else {
+        el.classList.remove('selected');
+      }
+    }
+    updateProgress();
+  });
 
   function updateProgress() {
     var answered = answers.filter(function (a) { return a !== null; }).length;
