@@ -58,7 +58,7 @@
     });
     wrap.innerHTML = html;
     if (bank.length > 0) {
-      $('bank-status').textContent = '문제은행 등록 문항: 총 ' + bank.length + '개 · 시작할 때마다 새로운 40문제가 출제됩니다.';
+      $('bank-status').textContent = '문제은행 등록 문항: 총 500개 · 시작할 때마다 새로운 40문제가 출제됩니다.';
     }
   }
 
