@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수상구조사 필기시험 모의고사</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 시작 화면 -->
+<section id="start-screen" class="screen active">
+  <div class="start-card">
+    <div class="start-icon"><i class="fa-solid fa-person-swimming"></i></div>
+    <h1>수상구조사 필기시험<br>모의고사</h1>
+    <p class="start-desc">
+      문제은행에서 실제 시험과 동일하게<br>
+      <strong>7개 과목 · 총 40문제</strong>가 무작위로 출제됩니다.
+    </p>
+    <div id="subject-summary" class="subject-summary"></div>
+    <button id="start-btn" class="btn btn-primary btn-lg" disabled>
+      <i class="fa-solid fa-spinner fa-spin"></i> 문제은행 불러오는 중...
+    </button>
+    <p id="bank-status" class="bank-status"></p>
+  </div>
+</section>
+
+<!-- 시험 화면 -->
+<section id="exam-screen" class="screen">
+  <header id="exam-header">
+    <div class="exam-header-inner">
+      <span id="exam-progress-text">1 / 40</span>
+      <div class="progress-bar"><div id="progress-fill"></div></div>
+      <span id="answered-count-text">답안 0개 작성</span>
+    </div>
+  </header>
+
+  <main id="question-area">
+    <div id="question-card" class="question-card">
+      <div class="question-meta">
+        <span id="q-subject" class="subject-badge"></span>
+        <span id="q-number" class="q-number"></span>
+      </div>
+      <h2 id="q-text" class="q-text"></h2>
+      <ol id="choices" class="choices"></ol>
+    </div>
+  </main>
+
+  <nav id="exam-nav">
+    <button id="prev-btn" class="btn btn-ghost"><i class="fa-solid fa-chevron-left"></i> 이전</button>
+    <div id="q-dots" class="q-dots"></div>
+    <button id="next-btn" class="btn btn-ghost">다음 <i class="fa-solid fa-chevron-right"></i></button>
+    <button id="submit-btn" class="btn btn-danger"><i class="fa-solid fa-flag-checkered"></i> 제출하기</button>
+  </nav>
+</section>
+
+<!-- 결과 화면 -->
+<section id="result-screen" class="screen">
+  <div class="result-card">
+    <h1><i class="fa-solid fa-square-poll-vertical"></i> 시험 결과</h1>
+    <div id="score-circle" class="score-circle">
+      <span id="score-value">0</span><span class="score-unit">점</span>
+    </div>
+    <p id="pass-message" class="pass-message"></p>
+    <p id="score-detail" class="score-detail"></p>
+    <div id="subject-breakdown" class="subject-breakdown"></div>
+    <div class="result-actions">
+      <button id="review-btn" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> 오답 확인</button>
+      <button id="retry-btn" class="btn btn-ghost"><i class="fa-solid fa-rotate-right"></i> 새 시험 보기</button>
+    </div>
+  </div>
+
+  <div id="review-area" class="review-area hidden">
+    <h2>문제 다시보기</h2>
+    <div class="review-filter">
+      <label><input type="radio" name="review-filter" value="wrong" checked> 틀린 문제만</label>
+      <label><input type="radio" name="review-filter" value="all"> 전체 문제</label>
+    </div>
+    <div id="review-list"></div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+<script src="js/parser.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
