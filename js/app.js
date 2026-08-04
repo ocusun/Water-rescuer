@@ -43,10 +43,10 @@
 
   function escapeHtml(s) {
     return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, '&')
+      .replace(/</g, '<')
+      .replace(/>/g, '>')
+      .replace(/"/g, '"');
   }
 
   // ---------- 시작 화면 ----------
@@ -302,14 +302,25 @@
 
   renderStart();
 
-  // ★ 문제은행을 JSON으로 즉시 로드 (DOCX 실시간 파싱 제거)
-  fetch('data/questions.json')
-    .then(function (resp) {
-      if (!resp.ok) throw new Error('문제은행 파일을 불러올 수 없습니다 (' + resp.status + ')');
-      return resp.json();
-    })
-    .then(function (questions) {
-      bank = questions;
+  // ★ 문제은행을 파트별 JSON으로 즉시 로드
+  var partUrls = [
+    'data/parts/part1.json',
+    'data/parts/part2.json',
+    'data/parts/part3.json',
+    'data/parts/part4.json',
+    'data/parts/part5.json',
+    'data/parts/part6.json',
+    'data/parts/part7.json'
+  ];
+  Promise.all(partUrls.map(function (url) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error(url + ' 로드 실패 (' + r.status + ')');
+      return r.json();
+    });
+  }))
+    .then(function (parts) {
+      bank = [];
+      parts.forEach(function (p) { bank = bank.concat(p); });
       console.log('[문제은행] 총 ' + bank.length + '문항 로드 완료');
       renderStart();
       setStartReady();
