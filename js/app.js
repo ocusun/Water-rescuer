@@ -147,7 +147,6 @@
     window.scrollTo(0, 0);
   }
 
-  // 이벤트 위임: 한 번만 등록, 모든 선택지 클릭 처리
   $('question-area').addEventListener('click', function (e) {
     var li = e.target.closest('.choice');
     if (!li) return;
@@ -160,7 +159,6 @@
 
     answers[idx] = n;
 
-    // 해당 카드의 선택 표시만 갱신
     var choices = card.querySelectorAll('.choice');
     for (var j = 0; j < choices.length; j++) {
       var el = choices[j];
@@ -334,13 +332,24 @@
 
   renderStart();
 
-  fetch('data/questions.json')
-    .then(function (resp) {
-      if (!resp.ok) throw new Error('문제은행 파일을 불러올 수 없습니다 (' + resp.status + ')');
-      return resp.json();
-    })
-    .then(function (questions) {
-      bank = questions;
+  var partUrls = [
+    'data/part1.json',
+    'data/part2.json',
+    'data/part3.json',
+    'data/part4.json',
+    'data/part5.json',
+    'data/part6.json',
+    'data/part7.json'
+  ];
+  Promise.all(partUrls.map(function (url) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error('문제은행 로드 실패: ' + url);
+      return r.json();
+    });
+  }))
+    .then(function (parts) {
+      bank = [];
+      parts.forEach(function (p) { bank = bank.concat(p); });
       console.log('[문제은행] 총 ' + bank.length + '문항 로드 완료');
       renderStart();
       setStartReady();
