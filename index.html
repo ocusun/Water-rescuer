@@ -31,26 +31,18 @@
 <section id="exam-screen" class="screen">
   <header id="exam-header">
     <div class="exam-header-inner">
-      <span id="exam-progress-text">1 / 40</span>
+      <span id="exam-progress-text">1 / 8 페이지</span>
       <div class="progress-bar"><div id="progress-fill"></div></div>
-      <span id="answered-count-text">답안 0개 작성</span>
+      <span id="answered-count-text">답안 0 / 40개 작성</span>
     </div>
   </header>
 
   <main id="question-area">
-    <div id="question-card" class="question-card">
-      <div class="question-meta">
-        <span id="q-subject" class="subject-badge"></span>
-        <span id="q-number" class="q-number"></span>
-      </div>
-      <h2 id="q-text" class="q-text"></h2>
-      <ol id="choices" class="choices"></ol>
-    </div>
+    <!-- 5문제씩 동적으로 렌더링됨 -->
   </main>
 
   <nav id="exam-nav">
     <button id="prev-btn" class="btn btn-ghost"><i class="fa-solid fa-chevron-left"></i> 이전</button>
-    <div id="q-dots" class="q-dots"></div>
     <button id="next-btn" class="btn btn-ghost">다음 <i class="fa-solid fa-chevron-right"></i></button>
     <button id="submit-btn" class="btn btn-danger"><i class="fa-solid fa-flag-checkered"></i> 제출하기</button>
   </nav>
