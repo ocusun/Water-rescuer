@@ -15,72 +15,47 @@
   let current = Math.max(0, Math.min(pages.length - 1, Number(location.hash.replace('#p','')) - 1 || 0));
 
   const esc = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));
+  const footer = p => `<div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div><div class="footer-meta"><span>${esc(p.related)}</span><span>문제은행 역분석 기반 독립 재구성</span></div>`;
 
   function opening(p){
-    return `
-      <span class="eyebrow">${esc(p.part)} · OPENING</span>
-      <h1 class="page-title">${esc(p.title)}</h1>
-      <p class="subtitle">${esc(p.subtitle)}</p>
-      <div class="hero-visual" aria-hidden="true">
-        <div class="lifeguard"><div class="cap"></div><div class="head"></div><div class="body"></div><div class="cross"></div><div class="tower"></div></div>
-        <div class="sea"></div>
-      </div>
-      <p class="lead">${esc(p.lead)}</p>
-      <div class="triad">${p.triad.map((t,i)=>`<div><b>0${i+1}</b>${esc(t)}</div>`).join('')}</div>
-      <div class="quote-box">${esc(p.quote)}</div>
-      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
-      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제은행 역분석 기반 재구성</span></div>`;
+    return `<span class="eyebrow">${esc(p.part)} · OPENING</span><h1 class="page-title">${esc(p.title)}</h1><p class="subtitle">${esc(p.subtitle)}</p><div class="hero-visual" aria-hidden="true"><div class="lifeguard"><div class="cap"></div><div class="head"></div><div class="body"></div><div class="cross"></div><div class="tower"></div></div><div class="sea"></div></div><p class="lead">${esc(p.lead)}</p><div class="triad">${p.triad.map((t,i)=>`<div><b>0${i+1}</b>${esc(t)}</div>`).join('')}</div><div class="quote-box">${esc(p.quote)}</div>${footer(p)}`;
   }
 
   function coreMap(p){
-    return `
-      <span class="eyebrow">${esc(p.part)} · CONCEPT MAP</span>
-      <h1 class="page-title">${esc(p.title)}</h1>
-      <p class="subtitle">${esc(p.subtitle)}</p>
-      <p class="lead">${esc(p.lead)}</p>
-      <div class="core-grid">${p.cards.map(c=>`
-        <article class="core-card"><span class="core-icon" aria-hidden="true">${esc(c[3])}</span><span class="num">${esc(c[0])}</span><h3>${esc(c[1])}</h3><p>${esc(c[2])}</p></article>`).join('')}</div>
-      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
-      <div class="footer-meta"><span>${esc(p.related)}</span><span>반복 개념을 묶어 학습</span></div>`;
-  }
-
-  function priority(p){
-    return `
-      <span class="eyebrow">${esc(p.part)} · CORE 01</span>
-      <h1 class="page-title">${esc(p.title)}</h1>
-      <p class="subtitle">${esc(p.subtitle)}</p>
-      <p class="lead">${esc(p.lead)}</p>
-      <div class="priority" aria-label="임무 우선순위">
-        ${p.priority.map((x,i)=>`<div class="layer l${i+1}">${i+1}. ${esc(x)}</div>`).join('')}
-      </div>
-      <div class="duty-compare">
-        <section class="duty-box primary"><h3>1차적 임무</h3><ul>${p.primary.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
-        <section class="duty-box secondary"><h3>2차적 임무</h3><ul>${p.secondary.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
-      </div>
-      <div class="trap-box"><strong>시험에서는 이렇게 바꿔 묻는다</strong>${p.traps.map(t=>`<div class="trap-row"><span>${esc(t[0])}</span><b class="${t[1]==='O'?'ok':'no'}">${t[1]}</b></div>`).join('')}</div>
-      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
-      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제은행 역분석 기반 재구성</span></div>`;
+    return `<span class="eyebrow">${esc(p.part)} · CONCEPT MAP</span><h1 class="page-title">${esc(p.title)}</h1><p class="subtitle">${esc(p.subtitle)}</p><p class="lead">${esc(p.lead)}</p><div class="core-grid">${p.cards.map(c=>`<article class="core-card"><span class="core-icon" aria-hidden="true">${esc(c[3])}</span><span class="num">${esc(c[0])}</span><h3>${esc(c[1])}</h3><p>${esc(c[2])}</p></article>`).join('')}</div>${footer(p)}`;
   }
 
   function framework(p){
-    return `
-      <span class="eyebrow">${esc(p.part)} · DECISION FRAME</span>
-      <h1 class="page-title">${esc(p.title)}</h1>
-      <p class="subtitle">${esc(p.subtitle)}</p>
-      <p class="lead">${esc(p.lead)}</p>
-      <div class="stage-flow">
-        ${p.stages.map((s,i)=>`<article class="stage-card"><span class="stage-num">${esc(s[0])}</span><div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p><small>${esc(s[3])}</small></div>${i < p.stages.length-1 ? '<span class="stage-arrow">→</span>' : ''}</article>`).join('')}
-      </div>
-      <div class="rule-panel"><strong>정답을 가르는 6개의 판단 규칙</strong><div class="rule-grid">${p.rules.map((r,i)=>`<div><b>${i+1}</b><span>${esc(r)}</span></div>`).join('')}</div></div>
-      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
-      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제번호가 아니라 행동 흐름으로 학습</span></div>`;
+    return `<span class="eyebrow">${esc(p.part)} · DECISION FRAME</span><h1 class="page-title">${esc(p.title)}</h1><p class="subtitle">${esc(p.subtitle)}</p><p class="lead">${esc(p.lead)}</p><div class="stage-flow">${p.stages.map((s,i)=>`<article class="stage-card"><span class="stage-num">${esc(s[0])}</span><div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p><small>${esc(s[3])}</small></div>${i < p.stages.length-1 ? '<span class="stage-arrow">→</span>' : ''}</article>`).join('')}</div><div class="rule-panel"><strong>정답을 가르는 6개의 판단 규칙</strong><div class="rule-grid">${p.rules.map((r,i)=>`<div><b>${i+1}</b><span>${esc(r)}</span></div>`).join('')}</div></div>${footer(p)}`;
+  }
+
+  function conceptModule(p){
+    return `<span class="eyebrow">${esc(p.label)}</span><h1 class="page-title">${esc(p.title)}</h1><p class="subtitle">${esc(p.subtitle)}</p><p class="lead">${esc(p.lead)}</p><div class="section-kicker">${esc(p.conceptTitle)}</div><div class="concept-layers">${p.layers.map((x,i)=>`<article class="concept-layer layer-${i+1}"><span class="layer-code">${esc(x[0])}</span><div><h3>${esc(x[1])}</h3><p>${esc(x[2])}</p></div></article>`).join('')}</div><div class="analysis-box"><small>역분석 포인트</small><strong>${esc(p.insight)}</strong></div><div class="source-note"><b>문제은행 안에서 이렇게 연결된다</b><p>${esc(p.sourceNote)}</p></div>${footer(p)}`;
+  }
+
+  function decisionPage(p){
+    return `<span class="eyebrow">${esc(p.label)}</span><h1 class="page-title">${esc(p.title)}</h1><p class="subtitle">${esc(p.subtitle)}</p><p class="lead">${esc(p.lead)}</p><div class="decision-axis">${p.axis.map((x,i)=>`<article><span>${esc(x[0])}</span><div><h3>${esc(x[1])}</h3><p>${esc(x[2])}</p></div></article>`).join('')}</div><div class="pattern-panel"><div class="section-kicker">선택지에서 자주 걸리는 함정</div>${p.patterns.map(x=>`<div class="pattern-row"><div><b>${esc(x[0])}</b><small>${esc(x[1])}</small></div><p>${esc(x[2])}</p></div>`).join('')}</div>${footer(p)}`;
+  }
+
+  function preventionLoop(p){
+    return `<span class="eyebrow">${esc(p.label)}</span><h1 class="page-title">${esc(p.title)}</h1><p class="subtitle">${esc(p.subtitle)}</p><p class="lead">${esc(p.lead)}</p><div class="prevention-flow">${p.loop.map((x,i)=>`<article class="prevention-step"><span class="step-num">${esc(x[0])}</span><div><h3>${esc(x[1])}</h3><p>${esc(x[2])}</p></div>${i < p.loop.length-1 ? '<span class="flow-arrow">↓</span>' : ''}</article>`).join('')}</div>${footer(p)}`;
+  }
+
+  function renderPage(p){
+    if(p.type === 'opening') return opening(p);
+    if(p.type === 'core-map') return coreMap(p);
+    if(p.type === 'framework') return framework(p);
+    if(p.type === 'concept-module') return conceptModule(p);
+    if(p.type === 'decision-page') return decisionPage(p);
+    if(p.type === 'prevention-loop') return preventionLoop(p);
+    return `<h1>${esc(p.title)}</h1>`;
   }
 
   function render(){
     const p = pages[current];
     if(!p) return;
     pageEl.className = `book-page ${p.type}`;
-    pageEl.innerHTML = p.type === 'opening' ? opening(p) : p.type === 'core-map' ? coreMap(p) : p.type === 'framework' ? framework(p) : priority(p);
+    pageEl.innerHTML = renderPage(p);
     pageNumber.textContent = `${current + 1} / ${pages.length}`;
     pagePart.textContent = p.part;
     progressBar.style.width = `${((current + 1) / pages.length) * 100}%`;
