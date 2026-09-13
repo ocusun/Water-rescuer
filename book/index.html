@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b3b64" />
+  <title>수상구조사 필기 합격 개념서 · Web Book</title>
+  <meta name="description" content="수상구조사 필기시험 문제은행을 개념 중심으로 재구성한 학습용 웹북" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/book.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="../" aria-label="모의고사로 돌아가기">
+        <span class="brand-mark" aria-hidden="true">W</span>
+        <span class="brand-copy">
+          <strong>수상구조사 필기 합격 개념서</strong>
+          <small>500제로 완성하는 핵심개념</small>
+        </span>
+      </a>
+      <div class="top-actions">
+        <button id="tocBtn" class="icon-btn" type="button" aria-label="목차 열기">☰</button>
+      </div>
+    </header>
+
+    <main class="reader" aria-live="polite">
+      <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+      <section id="bookPage" class="book-page" aria-label="전자책 페이지"></section>
+
+      <nav class="page-nav" aria-label="페이지 이동">
+        <button id="prevBtn" class="nav-btn prev" type="button">← <span>이전</span></button>
+        <div class="page-status">
+          <strong id="pageNumber">1 / 3</strong>
+          <span id="pagePart">PART 01</span>
+        </div>
+        <button id="nextBtn" class="nav-btn next" type="button"><span>다음</span> →</button>
+      </nav>
+    </main>
+  </div>
+
+  <aside id="tocPanel" class="toc-panel" aria-hidden="true">
+    <button id="tocCloseBtn" class="toc-close" type="button" aria-label="목차 닫기">×</button>
+    <div class="toc-head">
+      <span>WEB BOOK</span>
+      <h2>PART 01<br>수상구조사의 자세</h2>
+      <p>현재는 디자인 검토용 3페이지 프로토타입입니다.</p>
+    </div>
+    <ol id="tocList" class="toc-list"></ol>
+    <p class="toc-note">← → 방향키로도 페이지를 넘길 수 있습니다.</p>
+  </aside>
+  <div id="scrim" class="scrim" hidden></div>
+
+  <script src="./data/pages.js"></script>
+  <script src="./js/book.js"></script>
+</body>
+</html>
