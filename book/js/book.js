@@ -28,20 +28,20 @@
       <p class="lead">${esc(p.lead)}</p>
       <div class="triad">${p.triad.map((t,i)=>`<div><b>0${i+1}</b>${esc(t)}</div>`).join('')}</div>
       <div class="quote-box">${esc(p.quote)}</div>
-      <div class="memory-box"><small>10초 암기</small><strong>${esc(p.memory)}</strong></div>
-      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제은행 기반 학습용 재구성</span></div>`;
+      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
+      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제은행 역분석 기반 재구성</span></div>`;
   }
 
   function coreMap(p){
     return `
-      <span class="eyebrow">${esc(p.part)} · STUDY MAP</span>
+      <span class="eyebrow">${esc(p.part)} · CONCEPT MAP</span>
       <h1 class="page-title">${esc(p.title)}</h1>
       <p class="subtitle">${esc(p.subtitle)}</p>
       <p class="lead">${esc(p.lead)}</p>
       <div class="core-grid">${p.cards.map(c=>`
         <article class="core-card"><span class="core-icon" aria-hidden="true">${esc(c[3])}</span><span class="num">${esc(c[0])}</span><h3>${esc(c[1])}</h3><p>${esc(c[2])}</p></article>`).join('')}</div>
-      <div class="memory-box"><small>10초 암기</small><strong>${esc(p.memory)}</strong></div>
-      <div class="footer-meta"><span>${esc(p.related)}</span><span>8개 축으로 개념 압축</span></div>`;
+      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
+      <div class="footer-meta"><span>${esc(p.related)}</span><span>반복 개념을 묶어 학습</span></div>`;
   }
 
   function priority(p){
@@ -58,15 +58,29 @@
         <section class="duty-box secondary"><h3>2차적 임무</h3><ul>${p.secondary.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
       </div>
       <div class="trap-box"><strong>시험에서는 이렇게 바꿔 묻는다</strong>${p.traps.map(t=>`<div class="trap-row"><span>${esc(t[0])}</span><b class="${t[1]==='O'?'ok':'no'}">${t[1]}</b></div>`).join('')}</div>
-      <div class="memory-box"><small>10초 암기</small><strong>${esc(p.memory)}</strong></div>
-      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제은행 해설을 개념형으로 재구성</span></div>`;
+      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
+      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제은행 역분석 기반 재구성</span></div>`;
+  }
+
+  function framework(p){
+    return `
+      <span class="eyebrow">${esc(p.part)} · DECISION FRAME</span>
+      <h1 class="page-title">${esc(p.title)}</h1>
+      <p class="subtitle">${esc(p.subtitle)}</p>
+      <p class="lead">${esc(p.lead)}</p>
+      <div class="stage-flow">
+        ${p.stages.map((s,i)=>`<article class="stage-card"><span class="stage-num">${esc(s[0])}</span><div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p><small>${esc(s[3])}</small></div>${i < p.stages.length-1 ? '<span class="stage-arrow">→</span>' : ''}</article>`).join('')}
+      </div>
+      <div class="rule-panel"><strong>정답을 가르는 6개의 판단 규칙</strong><div class="rule-grid">${p.rules.map((r,i)=>`<div><b>${i+1}</b><span>${esc(r)}</span></div>`).join('')}</div></div>
+      <div class="memory-box"><small>핵심 기억</small><strong>${esc(p.memory)}</strong></div>
+      <div class="footer-meta"><span>${esc(p.related)}</span><span>문제번호가 아니라 행동 흐름으로 학습</span></div>`;
   }
 
   function render(){
     const p = pages[current];
     if(!p) return;
     pageEl.className = `book-page ${p.type}`;
-    pageEl.innerHTML = p.type === 'opening' ? opening(p) : p.type === 'core-map' ? coreMap(p) : priority(p);
+    pageEl.innerHTML = p.type === 'opening' ? opening(p) : p.type === 'core-map' ? coreMap(p) : p.type === 'framework' ? framework(p) : priority(p);
     pageNumber.textContent = `${current + 1} / ${pages.length}`;
     pagePart.textContent = p.part;
     progressBar.style.width = `${((current + 1) / pages.length) * 100}%`;
